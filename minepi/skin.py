@@ -9,6 +9,7 @@ from config import AUTH_URL
 from .skin_render import Render
 from .errors import NoRenderedSkin
 
+
 class Skin:
     """
     Tip
@@ -26,12 +27,12 @@ class Skin:
     """
 
     def __init__(
-            self,
-            raw_skin,
-            raw_cape=None,
-            raw_skin_url=None,
-            raw_cape_url=None,
-            name=None,
+        self,
+        raw_skin,
+        raw_cape=None,
+        raw_skin_url=None,
+        raw_cape_url=None,
+        name=None,
     ):
         self._raw_skin: Image.Image = raw_skin
         self._raw_skin_url: Optional[str] = raw_skin_url
@@ -56,12 +57,30 @@ class Skin:
                 f1 = 40 if i != 0 else 0
                 f2 = 16 if i != 0 else 0
 
-                new_skin_im.paste(ImageOps.mirror(self._raw_skin.crop((4+f1, 16, 8+f1, 20))), (20+f2, 48))
-                new_skin_im.paste(ImageOps.mirror(self._raw_skin.crop((8+f1, 16, 12+f1, 20))), (24+f2, 48))
-                new_skin_im.paste(ImageOps.mirror(self._raw_skin.crop((8+f1, 20, 12+f1, 32))), (16+f2, 52))
-                new_skin_im.paste(ImageOps.mirror(self._raw_skin.crop((12+f1, 20, 16+f1, 32))), (20+f2, 52))
-                new_skin_im.paste(ImageOps.mirror(self._raw_skin.crop((4+f1, 20, 8+f1, 32))), (24+f2, 52))
-                new_skin_im.paste(ImageOps.mirror(self._raw_skin.crop((0+f1, 20, 4+f1, 32))), (28+f2, 52))
+                new_skin_im.paste(
+                    ImageOps.mirror(self._raw_skin.crop((4 + f1, 16, 8 + f1, 20))),
+                    (20 + f2, 48),
+                )
+                new_skin_im.paste(
+                    ImageOps.mirror(self._raw_skin.crop((8 + f1, 16, 12 + f1, 20))),
+                    (24 + f2, 48),
+                )
+                new_skin_im.paste(
+                    ImageOps.mirror(self._raw_skin.crop((8 + f1, 20, 12 + f1, 32))),
+                    (16 + f2, 52),
+                )
+                new_skin_im.paste(
+                    ImageOps.mirror(self._raw_skin.crop((12 + f1, 20, 16 + f1, 32))),
+                    (20 + f2, 52),
+                )
+                new_skin_im.paste(
+                    ImageOps.mirror(self._raw_skin.crop((4 + f1, 20, 8 + f1, 32))),
+                    (24 + f2, 52),
+                )
+                new_skin_im.paste(
+                    ImageOps.mirror(self._raw_skin.crop((0 + f1, 20, 4 + f1, 32))),
+                    (28 + f2, 52),
+                )
 
             self._raw_skin = new_skin_im
 
@@ -115,14 +134,26 @@ class Skin:
         """The hash of the skin image
 
         This is used to check if the skin has changed"""
-        return self._raw_skin_url.replace(f"{AUTH_URL}/web/texture/skin/", "").replace(".png", "") if self._raw_skin_url else None
+        return (
+            self._raw_skin_url.replace(f"{AUTH_URL}/web/texture/skin/", "")
+            .replace(f"{AUTH_URL}/web/texture/default-skin/", "")
+            .replace(".png", "")
+            if self._raw_skin_url
+            else None
+        )
 
     @property
     def cape_hash(self):
         """The hash of the cape image
 
         This is used to check if the cape has changed"""
-        return self._raw_cape_url.replace(f"{AUTH_URL}/web/texture/cape/", "").replace(".png", "") if self._raw_cape_url else None
+        return (
+            self._raw_cape_url.replace(f"{AUTH_URL}/web/texture/cape/", "").replace(
+                ".png", ""
+            )
+            if self._raw_cape_url
+            else None
+        )
 
     def set_cape(self, cape: Image.Image):
         """Change the players cape
@@ -184,8 +215,12 @@ class Skin:
         else:
             im_cape = None
 
-        bytelist = [base64.b64encode(im_skin), base64.b64encode(im_cape)] if im_cape else [base64.b64encode(im_skin)]
-        return b';'.join(bytelist).decode()
+        bytelist = (
+            [base64.b64encode(im_skin), base64.b64encode(im_cape)]
+            if im_cape
+            else [base64.b64encode(im_skin)]
+        )
+        return b";".join(bytelist).decode()
 
     @classmethod
     def decodeb64(cls, b64: str):
@@ -220,22 +255,22 @@ class Skin:
         return cls(raw_skin=im_skin, raw_cape=im_cape)
 
     async def render_skin(
-            self,
-            vr: int = 25,
-            hr: int = 35,
-            hrh: int = 0,
-            vrll: int = 0,
-            vrrl: int = 0,
-            vrla: int = 0,
-            hrla: int = 0,
-            vrra: int = 0,
-            hrra: int = 0,
-            vrc: int = 30,
-            ratio: int = 12,
-            display_hair: bool = True,
-            display_second_layer: bool = True,
-            display_cape: bool = True,
-            aa: bool = False,
+        self,
+        vr: int = 25,
+        hr: int = 35,
+        hrh: int = 0,
+        vrll: int = 0,
+        vrrl: int = 0,
+        vrla: int = 0,
+        hrla: int = 0,
+        vrra: int = 0,
+        hrra: int = 0,
+        vrc: int = 30,
+        ratio: int = 12,
+        display_hair: bool = True,
+        display_second_layer: bool = True,
+        display_cape: bool = True,
+        aa: bool = False,
     ) -> Optional[Image.Image]:
         """Render a full body skin
 
@@ -302,12 +337,12 @@ class Skin:
         return im
 
     async def render_head(
-            self,
-            vr: int = 25,
-            hr: int = 35,
-            ratio: int = 12,
-            display_hair: bool = True,
-            aa: bool = False,
+        self,
+        vr: int = 25,
+        hr: int = 35,
+        ratio: int = 12,
+        display_hair: bool = True,
+        aa: bool = False,
     ) -> Optional[Image.Image]:
         """Render the players head
 
